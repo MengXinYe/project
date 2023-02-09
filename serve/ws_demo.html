@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <button id="connect">connect</button>
+  <button id="send" disabled>send</button><br>
+  <span id="recv"></span>
+  <script>
+    const connect = document.querySelector('#connect')
+    const send = document.querySelector('#send')
+    const recv = document.querySelector('#recv')
+    let ws = null 
+    connect.addEventListener('click', () => {
+      ws = new WebSocket('ws://localhost:3366')
+      ws.addEventListener('open', () => {
+        recv.innerHTML = 'ok'
+        send.disabled = false
+      })
+      ws.addEventListener('close', () => {
+        send.disabled = true
+        recv.innerHTML = 'end'
+      })
+      ws.addEventListener('message', msg => {
+        recv.innerHTML = msg.data
+      })
+    })
+    send.addEventListener('click', () => {
+      ws.send(JSON.stringify({
+        action: 'fullScreen',
+        socketType: 'trend',
+        chartName: 'trend',
+        value: ''
+      }))
+    })
+  </script>
+</body>
+</html>
